@@ -33,7 +33,12 @@ scan1perm_stats = function(genoprobs, pheno, addcovar = NULL, kinship = NULL, in
     scan1_out = scan1(genoprobs, pheno, kinship = kinship, addcovar = covar, 
     intcovar = intcovar, cores = cores)
   }
-  nind = length(intersect(rownames(addcovar), rownames(pheno)))
+
+  if(length(addcovar) > 0){
+    nind = length(intersect(rownames(addcovar), rownames(pheno)))
+  }else{
+    nind <- length(pheno)
+  }
   k = dim(genoprobs[[1]])[2] # Number of alleles
   true_hist = hist(lod2p(scan1_out, nind = nind, k = 8), breaks = breaks, plot = FALSE)
   true_ecdf = as.matrix(cumsum(true_hist$counts) / sum(true_hist$counts))
