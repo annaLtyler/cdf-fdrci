@@ -1,4 +1,5 @@
-sample_perm_null = function(genoprobs, pheno, addcovar = NULL, intcovar = NULL, kinship = NULL){
+sample_perm_null = function(genoprobs, pheno, addcovar = NULL, intcovar = NULL, 
+  kinship = NULL, cores = 1){
     
   nind = length(pheno)
   k = dim(genoprobs[[1]])[2] # Number of alleles
@@ -11,7 +12,8 @@ sample_perm_null = function(genoprobs, pheno, addcovar = NULL, intcovar = NULL, 
     rownames(null_geno[[i]])  <- null_names
   }
   
-  scan1_null = scan1(null_geno, pheno, kinship = kinship, addcovar = addcovar, intcovar = intcovar)
+  scan1_null = scan1(null_geno, pheno, kinship = kinship, addcovar = addcovar, 
+    intcovar = intcovar, cores = cores)
   
   null_p = lod2p(scan1_null, nind, k)
   return(null_p)

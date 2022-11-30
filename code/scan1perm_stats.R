@@ -1,7 +1,8 @@
 # Compute summary stats of empirical null CDFs for permutations. This is a helper function for computing FDRs.
 
 scan1perm_stats = function(genoprobs, pheno, addcovar = NULL, kinship = NULL, intcovar = NULL,
-                         nperm = 100, breaks = seq(0, 1, 0.0001), scan1_out = NULL){
+                         nperm = 100, breaks = seq(0, 1, 0.0001), scan1_out = NULL,
+                          cores = 1){
 
   # Compute mean and variance of empirical CDFs
   mn_ecdf = matrix(0, nrow = length(breaks) - 1, ncol = 1)
@@ -9,7 +10,7 @@ scan1perm_stats = function(genoprobs, pheno, addcovar = NULL, kinship = NULL, in
   min_p = matrix(0, nrow = nperm, ncol = 1)
   for(n in 1:nperm){
     null_p = sample_perm_null(genoprobs, pheno, addcovar = addcovar, 
-      kinship = kinship, intcovar = intcovar)
+      kinship = kinship, intcovar = intcovar, cores = cores)
     
     # Compute eCDF data 
     curr_hist = hist(null_p, breaks = breaks, plot = FALSE)
@@ -29,7 +30,8 @@ scan1perm_stats = function(genoprobs, pheno, addcovar = NULL, kinship = NULL, in
   
   # Compute true scan
   if(is.null(scan1_out)){
-    scan1_out = scan1(genoprobs, pheno, kinship = kinship, addcovar = covar, intcovar = intcovar)
+    scan1_out = scan1(genoprobs, pheno, kinship = kinship, addcovar = covar, 
+    intcovar = intcovar, cores = cores)
   }
   nind = length(intersect(rownames(addcovar), rownames(pheno)))
   k = dim(genoprobs[[1]])[2] # Number of alleles
